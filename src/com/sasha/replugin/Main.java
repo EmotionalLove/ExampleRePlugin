@@ -6,13 +6,17 @@ import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerRotationPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerSwingArmPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientVehicleMovePacket;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.reminecraft.Configuration;
 import com.sasha.reminecraft.api.RePlugin;
+import com.sasha.reminecraft.client.ReClient;
 import com.sasha.reminecraft.logging.ILogger;
 import com.sasha.reminecraft.logging.LoggerBuilder;
+import com.sasha.reminecraft.util.entity.Entity;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -37,10 +41,29 @@ public class Main extends RePlugin implements SimpleListener {
             } else {
                 float yaw = -90 + (90 - -90) * rand.nextFloat();
                 float pitch = -90 + (90 - -90) * rand.nextFloat();
+                if (isRiding(ReClient.ReClientCache.INSTANCE.player)) {
+                    Entity entity = getRiding(ReClient.ReClientCache.INSTANCE.player);
+                    this.getReMinecraft().minecraftClient.getSession().send(new ClientVehicleMovePacket(entity.posX, entity.posY, entity.posZ, yaw, pitch));
+                    return;
+                }
                 this.getReMinecraft().minecraftClient.getSession().send(new ClientPlayerRotationPacket(true, yaw, pitch));
             }
         }
     };
+
+    public boolean isRiding(Entity e) {
+        for (Map.Entry<Integer, Entity> entry : ReClient.ReClientCache.INSTANCE.entityCache.entrySet()) {
+            if (entry.getValue().passengerIds.contains(e.entityId)) return true;
+        }
+        return false;
+    }
+
+    public Entity getRiding(Entity e) {
+        for (Map.Entry<Integer, Entity> entry : ReClient.ReClientCache.INSTANCE.entityCache.entrySet()) {
+            if (entry.getValue().passengerIds.contains(e.entityId)) return entry.getValue();
+        }
+        return null;
+    }
 
     @Override
     public void onPluginInit() {
