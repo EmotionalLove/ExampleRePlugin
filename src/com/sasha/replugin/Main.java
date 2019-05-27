@@ -2,11 +2,18 @@ package com.sasha.replugin;
 
 import com.github.steveice10.mc.protocol.MinecraftProtocol;
 import com.github.steveice10.mc.protocol.data.SubProtocol;
+import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
+import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
+import com.github.steveice10.mc.protocol.data.game.world.block.BlockFace;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerRotationPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerStatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerSwingArmPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientVehicleMovePacket;
+import com.github.steveice10.mc.protocol.packet.ingame.server.world.ServerChunkDataPacket;
+import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.reminecraft.Configuration;
 import com.sasha.reminecraft.api.RePlugin;
@@ -38,6 +45,8 @@ public class Main extends RePlugin implements SimpleListener {
         if (this.getReMinecraft().minecraftClient != null && this.getReMinecraft().minecraftClient.getSession().isConnected() && isInGame() && !this.getReMinecraft().areChildrenConnected()) {
             if (rand.nextBoolean()) {
                 this.getReMinecraft().minecraftClient.getSession().send(new ClientPlayerSwingArmPacket(Hand.MAIN_HAND));
+                if (CFG.var_hitBlock) this.getReMinecraft().minecraftClient.getSession().send(new ClientPlayerActionPacket(PlayerAction.START_DIGGING,
+                        new Position((int)ReClient.ReClientCache.INSTANCE.posX, (int) ReClient.ReClientCache.INSTANCE.posY - 1, (int) ReClient.ReClientCache.INSTANCE.posZ), BlockFace.UP));
             } else {
                 float yaw = -90 + (90 - -90) * rand.nextFloat();
                 float pitch = -90 + (90 - -90) * rand.nextFloat();
@@ -114,6 +123,7 @@ public class Main extends RePlugin implements SimpleListener {
 class Config extends Configuration {
     @ConfigSetting public boolean var_spamChat = false;
     @ConfigSetting public boolean var_antiAfk = true;
+    @ConfigSetting public boolean var_hitBlock = true;
     @ConfigSetting public int var_spamIntervalSeconds = 60;
     @ConfigSetting public int var_twistIntervalSeconds = 5;
     @ConfigSetting public ArrayList<String> var_spamMessages = new ArrayList<>();
