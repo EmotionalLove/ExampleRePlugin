@@ -13,6 +13,7 @@ import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlaye
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientVehicleMovePacket;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.reminecraft.Configuration;
+import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
 import com.sasha.reminecraft.client.ReClient;
 import com.sasha.reminecraft.logging.ILogger;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Main extends RePlugin implements SimpleListener {
 
+    public static WalkingHelper helper;
     public ILogger logger = LoggerBuilder.buildProperLogger("AntiAFK");
     public Config CFG = new Config("AntiAFK");
     private ScheduledExecutorService executorService;
@@ -39,6 +41,10 @@ public class Main extends RePlugin implements SimpleListener {
     };
     private Runnable twistTask = () -> {
         Random rand = new Random();
+        if (CFG.var_walkInsteadOfTwist) {
+            helper.walk();
+            if (rand.nextBoolean()) return;
+        }
         if (this.getReMinecraft().minecraftClient != null && this.getReMinecraft().minecraftClient.getSession().isConnected() && isInGame() && !this.getReMinecraft().areChildrenConnected()) {
             if (rand.nextBoolean()) {
                 this.getReMinecraft().minecraftClient.getSession().send(new ClientPlayerSwingArmPacket(Hand.MAIN_HAND));
@@ -59,10 +65,7 @@ public class Main extends RePlugin implements SimpleListener {
     };
 
     public boolean isRiding(Entity e) {
-        for (Map.Entry<Integer, Entity> entry : ReClient.ReClientCache.INSTANCE.entityCache.entrySet()) {
-            if (entry.getValue().passengerIds.contains(e.entityId)) return true;
-        }
-        return false;
+        return getRiding(e) != null;
     }
 
     public Entity getRiding(Entity e) {
@@ -74,6 +77,7 @@ public class Main extends RePlugin implements SimpleListener {
 
     @Override
     public void onPluginInit() {
+        helper = new WalkingHelper(this);
         executorService = Executors.newScheduledThreadPool(4);
         if (CFG.var_spamChat) {
             executorService.scheduleWithFixedDelay(spamTask, CFG.var_spamIntervalSeconds,
@@ -83,6 +87,7 @@ public class Main extends RePlugin implements SimpleListener {
             executorService.scheduleWithFixedDelay(twistTask, CFG.var_twistIntervalSeconds,
                     CFG.var_twistIntervalSeconds, TimeUnit.SECONDS);
         }
+        if (CFG.var_walkInsteadOfTwist) this.getReMinecraft().EVENT_BUS.registerListener(helper);
     }
 
     @Override
@@ -104,7 +109,11 @@ public class Main extends RePlugin implements SimpleListener {
 
     @Override
     public void registerCommands() {
-
+        try {
+            ReMinecraft.INGAME_CMD_PROCESSOR.register(SetPosCommand.class);
+        } catch (IllegalAccessException | InstantiationException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -124,6 +133,8 @@ class Config extends Configuration {
     public boolean var_spamChat = false;
     @ConfigSetting
     public boolean var_antiAfk = true;
+    @ConfigSetting
+    public boolean var_walkInsteadOfTwist = false;
     @ConfigSetting
     public boolean var_hitBlock = true;
     @ConfigSetting
