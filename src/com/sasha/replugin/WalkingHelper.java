@@ -73,7 +73,7 @@ public class WalkingHelper implements SimpleListener {
 
     }
 
-    public boolean randBool() {
+    public static boolean randBool() {
         Random random = new Random();
         return random.nextBoolean();
     }
@@ -102,9 +102,8 @@ public class WalkingHelper implements SimpleListener {
     @SimpleEventHandler
     public void onPckRx(RemoteServerPacketRecieveEvent e) {
         if (e.getRecievedPacket() instanceof ServerPlayerPositionRotationPacket) {
-            Random rand = new Random();
             plugin.logger.log("Walking direction reset.");
-            if (rand.nextBoolean()) {
+            if (randBool()) {
                 if (phase <= 1) phase = 5;
                 phase--;
             } else {

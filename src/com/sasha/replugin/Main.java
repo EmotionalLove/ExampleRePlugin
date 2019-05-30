@@ -27,6 +27,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static com.sasha.replugin.WalkingHelper.randBool;
+
 public class Main extends RePlugin implements SimpleListener {
 
     public static WalkingHelper helper;
@@ -43,10 +45,10 @@ public class Main extends RePlugin implements SimpleListener {
         Random rand = new Random();
         if (CFG.var_walkInsteadOfTwist) {
             helper.walk();
-            if (rand.nextBoolean()) return;
+            if (randBool()) return;
         }
         if (this.getReMinecraft().minecraftClient != null && this.getReMinecraft().minecraftClient.getSession().isConnected() && isInGame() && !this.getReMinecraft().areChildrenConnected()) {
-            if (rand.nextBoolean()) {
+            if (randBool()) {
                 this.getReMinecraft().minecraftClient.getSession().send(new ClientPlayerSwingArmPacket(Hand.MAIN_HAND));
                 if (CFG.var_hitBlock)
                     this.getReMinecraft().minecraftClient.getSession().send(new ClientPlayerActionPacket(PlayerAction.START_DIGGING,
