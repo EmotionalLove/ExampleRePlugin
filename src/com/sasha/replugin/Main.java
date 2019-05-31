@@ -5,16 +5,20 @@ import com.github.steveice10.mc.protocol.data.SubProtocol;
 import com.github.steveice10.mc.protocol.data.game.entity.metadata.Position;
 import com.github.steveice10.mc.protocol.data.game.entity.player.Hand;
 import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerAction;
+import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerState;
 import com.github.steveice10.mc.protocol.data.game.world.block.BlockFace;
 import com.github.steveice10.mc.protocol.packet.ingame.client.ClientChatPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerActionPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerRotationPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerStatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerSwingArmPacket;
 import com.github.steveice10.mc.protocol.packet.ingame.client.world.ClientVehicleMovePacket;
+import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
 import com.sasha.reminecraft.Configuration;
 import com.sasha.reminecraft.ReMinecraft;
 import com.sasha.reminecraft.api.RePlugin;
+import com.sasha.reminecraft.api.event.ChildJoinEvent;
 import com.sasha.reminecraft.client.ReClient;
 import com.sasha.reminecraft.logging.ILogger;
 import com.sasha.reminecraft.logging.LoggerBuilder;
@@ -74,6 +78,14 @@ public class Main extends RePlugin implements SimpleListener {
             }
         }
     };
+
+    @SimpleEventHandler
+    public void onChildJoin(ChildJoinEvent e) {
+        if (helper.crouched) {
+            this.getReMinecraft().minecraftClient.getSession()
+                    .send(new ClientPlayerStatePacket(ReClient.ReClientCache.INSTANCE.entityId, PlayerState.STOP_SNEAKING, 0));
+        }
+    }
 
     public boolean isRiding(Entity e) {
         return getRiding(e) != null;
