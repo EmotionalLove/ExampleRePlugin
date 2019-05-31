@@ -53,6 +53,15 @@ public class Main extends RePlugin implements SimpleListener {
                 if (CFG.var_hitBlock)
                     this.getReMinecraft().minecraftClient.getSession().send(new ClientPlayerActionPacket(PlayerAction.START_DIGGING,
                             new Position((int) ReClient.ReClientCache.INSTANCE.posX, (int) ReClient.ReClientCache.INSTANCE.posY - 1, (int) ReClient.ReClientCache.INSTANCE.posZ), BlockFace.UP));
+                new Thread(() -> {
+                    try {
+                        Thread.sleep(750L);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    this.getReMinecraft().minecraftClient.getSession().send(new ClientPlayerActionPacket(PlayerAction.CANCEL_DIGGING,
+                            new Position((int) ReClient.ReClientCache.INSTANCE.posX, (int) ReClient.ReClientCache.INSTANCE.posY - 1, (int) ReClient.ReClientCache.INSTANCE.posZ), BlockFace.UP));
+                }).start();
             } else {
                 float yaw = -90 + (90 - -90) * rand.nextFloat();
                 float pitch = -90 + (90 - -90) * rand.nextFloat();
