@@ -21,8 +21,7 @@ public class SetPosCommand extends SimpleCommand {
             for (ChildReClient childClient : ReMinecraft.INSTANCE.childClients) {
                 childClient.getSession().send(new ServerChatPacket(new TextMessage("\2474Invalid argument. Valid example: POS_X")));
             }
-        }
-        else {
+        } else {
             for (ChildReClient childClient : ReMinecraft.INSTANCE.childClients) {
                 childClient.getSession().send(new ServerChatPacket(new TextMessage("\247aDone!")));
             }

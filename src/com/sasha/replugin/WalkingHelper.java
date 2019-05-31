@@ -1,6 +1,8 @@
 package com.sasha.replugin;
 
+import com.github.steveice10.mc.protocol.data.game.entity.player.PlayerState;
 import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerPositionPacket;
+import com.github.steveice10.mc.protocol.packet.ingame.client.player.ClientPlayerStatePacket;
 import com.github.steveice10.mc.protocol.packet.ingame.server.entity.player.ServerPlayerPositionRotationPacket;
 import com.sasha.eventsys.SimpleEventHandler;
 import com.sasha.eventsys.SimpleListener;
@@ -71,6 +73,8 @@ public class WalkingHelper implements SimpleListener {
                     break;
             }
             if (randBool()) {
+                getReMc().minecraftClient.getSession()
+                        .send(new ClientPlayerStatePacket(ReClient.ReClientCache.INSTANCE.entityId, crouched ? PlayerState.STOP_SNEAKING : PlayerState.START_SNEAKING, 0));
             }
         }
 
