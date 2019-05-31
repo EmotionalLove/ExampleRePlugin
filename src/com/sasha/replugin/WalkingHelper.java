@@ -34,7 +34,7 @@ public class WalkingHelper implements SimpleListener {
                     getReMc().minecraftClient.getSession()
                             .send(new ClientPlayerPositionPacket(true, ReClient.ReClientCache.INSTANCE.posX + getSpeed(), ReClient.ReClientCache.INSTANCE.posY, ReClient.ReClientCache.INSTANCE.posZ));
                     ReClient.ReClientCache.INSTANCE.posX += getSpeed();
-                    if (randBool()) {
+                    if (randBool() && randBool() && randBool()) {
                         getReMc().minecraftClient.getSession()
                                 .send(new ClientPlayerPositionPacket(true, ReClient.ReClientCache.INSTANCE.posX, ReClient.ReClientCache.INSTANCE.posY, ReClient.ReClientCache.INSTANCE.posZ + 0.15));
                         ReClient.ReClientCache.INSTANCE.posZ += 0.15;
@@ -44,7 +44,7 @@ public class WalkingHelper implements SimpleListener {
                     getReMc().minecraftClient.getSession()
                             .send(new ClientPlayerPositionPacket(true, ReClient.ReClientCache.INSTANCE.posX - getSpeed(), ReClient.ReClientCache.INSTANCE.posY, ReClient.ReClientCache.INSTANCE.posZ));
                     ReClient.ReClientCache.INSTANCE.posX -= getSpeed();
-                    if (randBool()) {
+                    if (randBool() && randBool() && randBool()) {
                         getReMc().minecraftClient.getSession()
                                 .send(new ClientPlayerPositionPacket(true, ReClient.ReClientCache.INSTANCE.posX, ReClient.ReClientCache.INSTANCE.posY, ReClient.ReClientCache.INSTANCE.posZ - 0.15));
                         ReClient.ReClientCache.INSTANCE.posZ -= 0.15;
@@ -54,7 +54,7 @@ public class WalkingHelper implements SimpleListener {
                     getReMc().minecraftClient.getSession()
                             .send(new ClientPlayerPositionPacket(true, ReClient.ReClientCache.INSTANCE.posX, ReClient.ReClientCache.INSTANCE.posY, ReClient.ReClientCache.INSTANCE.posZ + getSpeed()));
                     ReClient.ReClientCache.INSTANCE.posZ += getSpeed();
-                    if (randBool()) {
+                    if (randBool() && randBool() && randBool()) {
                         getReMc().minecraftClient.getSession()
                                 .send(new ClientPlayerPositionPacket(true, ReClient.ReClientCache.INSTANCE.posX - 0.15, ReClient.ReClientCache.INSTANCE.posY, ReClient.ReClientCache.INSTANCE.posZ));
                         ReClient.ReClientCache.INSTANCE.posX -= 0.15;
@@ -65,7 +65,7 @@ public class WalkingHelper implements SimpleListener {
                     getReMc().minecraftClient.getSession()
                             .send(new ClientPlayerPositionPacket(true, ReClient.ReClientCache.INSTANCE.posX, ReClient.ReClientCache.INSTANCE.posY, ReClient.ReClientCache.INSTANCE.posZ - getSpeed()));
                     ReClient.ReClientCache.INSTANCE.posZ -= getSpeed();
-                    if (randBool()) {
+                    if (randBool() && randBool() && randBool()) {
                         getReMc().minecraftClient.getSession()
                                 .send(new ClientPlayerPositionPacket(true, ReClient.ReClientCache.INSTANCE.posX + 0.15, ReClient.ReClientCache.INSTANCE.posY, ReClient.ReClientCache.INSTANCE.posZ));
                         ReClient.ReClientCache.INSTANCE.posX += 0.15;
